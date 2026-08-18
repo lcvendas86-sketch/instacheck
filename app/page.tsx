@@ -1600,18 +1600,19 @@ function SpySystemContent() {
     }
   }, [imagePreviewUrl])
 
-  // Show continue button after Instagram profile loads with delay
+  // Show continue button only after profile AND posts are loaded, with a delay
+  // so the person can see the posts first
   useEffect(() => {
-    if (instagramProfile && currentStage === 3) {
+    if (instagramProfile && currentStage === 3 && instagramPosts.length > 0) {
       setShowContinueButton(false)
       const timer = setTimeout(() => {
         setShowContinueButton(true)
-      }, 2000) // 2 second delay after profile loads
+      }, 3000) // 3 second delay after posts appear
       return () => clearTimeout(timer)
     } else {
       setShowContinueButton(false)
     }
-  }, [instagramProfile, currentStage])
+  }, [instagramProfile, currentStage, instagramPosts])
 
   // Countdown timer effect
   useEffect(() => {
@@ -2955,7 +2956,7 @@ const fetchUserLocation = async () => {
               </div>
             )}
 
-            {(showContinueButton || isAnalyzing || (!!fileName && !!investigatedHandle)) && (
+            {((showContinueButton && instagramPosts.length > 0) || isAnalyzing) && (
               <Button
                 onClick={startAnalysis}
                 disabled={!fileName || !investigatedHandle || isAnalyzing}
