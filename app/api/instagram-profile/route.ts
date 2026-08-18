@@ -92,16 +92,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Username is required" }, { status: 400 })
     }
 
-    const apiUrl = "https://instagram120.p.rapidapi.com/api/instagram/profile"
+    const apiUrl = "https://ig-downloader-api.p.rapidapi.com/api/instagram/profile"
 
-    console.log("[v0] Fetching profile from instagram120 API for:", username)
+    console.log("[v0] Fetching profile from ig-downloader-api for:", username)
 
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-rapidapi-key": "58476d898amsh61d6476db2514cfp114ab2jsn8e290bed9186",
-        "x-rapidapi-host": "instagram120.p.rapidapi.com",
+        "x-rapidapi-key": "42865ce77amsh6b3ec8ac168e4c3p1ae1b6jsndc1ea20ce2d0",
+        "x-rapidapi-host": "ig-downloader-api.p.rapidapi.com",
       },
       body: JSON.stringify({
         username: username,

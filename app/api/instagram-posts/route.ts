@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Username is required" }, { status: 400 })
     }
 
-    const apiUrl = "https://instagram120.p.rapidapi.com/api/instagram/posts"
+    const apiUrl = "https://ig-downloader-api.p.rapidapi.com/api/instagram/posts"
 
     console.log("[v0] Fetching Instagram posts for:", username)
 
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: {
         "x-rapidapi-key": "42865ce77amsh6b3ec8ac168e4c3p1ae1b6jsndc1ea20ce2d0",
-        "x-rapidapi-host": "instagram120.p.rapidapi.com",
+        "x-rapidapi-host": "ig-downloader-api.p.rapidapi.com",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -55,8 +55,12 @@ export async function POST(request: NextRequest) {
     // Try multiple response formats - API returns data in result.data.edges
     let items: any[] = []
     
+    // Format 0: data.result.edges (RapidAPI ig-downloader-api actual format!)
+    if (data.result?.edges && Array.isArray(data.result.edges)) {
+      items = data.result.edges.map((edge: any) => edge.node || edge)
+    }
     // Format 1: data.result.data.edges (RapidAPI instagram120 actual format!)
-    if (data.result?.data?.edges && Array.isArray(data.result.data.edges)) {
+    else if (data.result?.data?.edges && Array.isArray(data.result.data.edges)) {
       items = data.result.data.edges.map((edge: any) => edge.node || edge)
     }
     // Format 2: data.data.edges 
