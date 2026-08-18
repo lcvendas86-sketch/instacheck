@@ -2841,15 +2841,11 @@ const fetchUserLocation = async () => {
                           <img
                             src={`/api/instagram-image-proxy?url=${encodeURIComponent(post.media_url)}`}
                             alt={`Post ${index + 1}`}
-                            className="w-full h-full object-cover filter blur-[2px]"
-                            crossOrigin="anonymous"
+                            className="w-full h-full object-cover"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = "/placeholder.svg"
                             }}
                           />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                            <Lock size={14} className="text-white/80" />
-                          </div>
                           <div className="absolute bottom-0.5 left-0.5 flex items-center gap-0.5 bg-black/60 px-1 py-0.5 rounded text-[10px]">
                             <Heart size={8} className="text-pink-400" />
                             <span className="text-white">{post.like_count > 1000 ? `${(post.like_count / 1000).toFixed(1)}K` : post.like_count}</span>
