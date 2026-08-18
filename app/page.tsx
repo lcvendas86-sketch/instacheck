@@ -1592,11 +1592,17 @@ function SpySystemContent() {
   // Show continue button only after profile AND posts are loaded, with a delay
   // so the person can see the posts first
   useEffect(() => {
-    if (instagramProfile && currentStage === 3 && instagramPosts.length > 0) {
+    // Perfil privado: não tem posts para mostrar, então o botão aparece
+    // logo após o card do perfil carregar.
+    // Perfil público: espera os posts aparecerem para a pessoa vê-los primeiro.
+    const isPrivate = instagramProfile?.is_private
+    const readyToShow = isPrivate || instagramPosts.length > 0
+
+    if (instagramProfile && currentStage === 3 && readyToShow) {
       setShowContinueButton(false)
       const timer = setTimeout(() => {
         setShowContinueButton(true)
-      }, 3000) // 3 second delay after posts appear
+      }, 3000) // 3 second delay after profile/posts appear
       return () => clearTimeout(timer)
     } else {
       setShowContinueButton(false)
@@ -2945,7 +2951,7 @@ const fetchUserLocation = async () => {
               </div>
             )}
 
-            {((showContinueButton && instagramPosts.length > 0) || isAnalyzing) && (
+            {((showContinueButton && (instagramPosts.length > 0 || instagramProfile?.is_private)) || isAnalyzing) && (
               <Button
                 onClick={startAnalysis}
                 disabled={!fileName || !investigatedHandle || isAnalyzing}
