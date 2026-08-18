@@ -294,17 +294,24 @@ const getProfileFromCache = (user: string): any | null => {
 }
 
 // Carousel component for Liked Photo 3
-function CarouselPost3({ instagramProfile, imagePreviewUrl, investigatedHandle }: {
+function CarouselPost3({ instagramProfile, imagePreviewUrl, investigatedHandle, instagramPosts }: {
   instagramProfile: any
   imagePreviewUrl: string | null
   investigatedHandle: string
+  instagramPosts?: any[]
 }) {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const carouselImages = [
+  const fallbackImages = [
     "/images/7b352510dd-8016-4bce-97de-8e8a5e4a141a-7d.png",
     "/images/beach-friends-1.jpg",
     "/images/beach-paddle-1.jpg"
   ]
+  // Usa as fotos reais do perfil pesquisado (via proxy) quando disponíveis
+  const realImages = (instagramPosts || [])
+    .filter((post: any) => post?.media_url)
+    .slice(0, 6)
+    .map((post: any) => `/api/instagram-image-proxy?url=${encodeURIComponent(post.media_url)}`)
+  const carouselImages = realImages.length > 0 ? realImages : fallbackImages
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % carouselImages.length)
@@ -321,6 +328,10 @@ function CarouselPost3({ instagramProfile, imagePreviewUrl, investigatedHandle }
           src={carouselImages[currentSlide]}
           alt={`Liked Photo 3 - ${currentSlide + 1}`}
           className="w-full h-full object-cover filter blur-sm transition-all duration-300"
+          crossOrigin="anonymous"
+          onError={(e) => {
+            ;(e.target as HTMLImageElement).src = fallbackImages[currentSlide % fallbackImages.length]
+          }}
         />
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
           <Lock size={48} className="text-white" />
@@ -3366,6 +3377,7 @@ case 4: // OLD STAGE 2: Detection and Notifications
                     instagramProfile={instagramProfile}
                     imagePreviewUrl={imagePreviewUrl}
                     investigatedHandle={investigatedHandle}
+                    instagramPosts={instagramPosts}
                   />
 
                   {/* Liked Photo 4 */}
